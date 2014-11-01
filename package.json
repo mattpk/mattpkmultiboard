@@ -1,0 +1,13 @@
+{
+  "name": "mattpkmultiboard",
+  "version": "0.0.1",
+  "description": "trying to make a whiteboard",
+  "dependencies": {
+    "express": "4.x",
+    "socket.io": "1.x"
+  },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.2.x"
+  }
+}

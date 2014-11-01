@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+	<title>Multiboard</title>
+	<style>
+	#myCanvas {
+		padding-left: 0;
+		padding-right: 0;
+		margin-left: auto;
+		margin-right: auto;
+		display: block;
+		border: 1px solid;
+	}
+	</style>
+</head>	
+<body>
+	<canvas id="myCanvas" width="600" height="450">Your browser is outdated.</canvas>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+	<script>
+	var canvas = document.getElementById('myCanvas');
+	var ctx = canvas.getContext("2d");
+	var hold = false;
+
+	var socket = io();
+
+	function getMousePos(canvas, evt) {
+		var rect = canvas.getBoundingClientRect();
+		return {
+			x: evt.clientX - rect.left,
+			y: evt.clientY - rect.top
+		};
+	}
+
+	function drawPointLocal(evt)
+	{
+		var mousePos = getMousePos(canvas,evt);
+		drawPoint(mousePos.x,mousePos.y,function(){
+			socket.emit('sendpoint',{x:mousePos.x,y:mousePos.y});
+		});
+	}
+
+	function drawPoint(x,y,callback) {
+		ctx.beginPath();
+		ctx.arc(x, y, 3, 0, 2 * Math.PI, false);
+		ctx.fillStyle = 'black';
+		ctx.fill();
+		ctx.stroke();
+		callback();
+	}
+
+	canvas.addEventListener('mousedown',function(evt){
+		hold = true;
+		drawPointLocal(evt);
+	});
+	
+	canvas.addEventListener('mouseup',function(evt){
+		hold = false;
+	});
+	canvas.addEventListener('mousemove', function(evt) {
+		if (hold)
+		{
+			drawPointLocal(evt);
+		}
+	});
+
+	socket.on('sendpoint', function(point){
+		drawPoint(point.x,point.y);
+	});
+	</script>
+</body>
+</html>
