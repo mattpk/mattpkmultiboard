@@ -37,7 +37,7 @@
 		<div id="chatbox">
 			<ul id="messages"></ul>
 			<form action="">
-			  <input id="m" autocomplete="off" value = "Enter your username" /><button>Send</button>
+				<input id="m" autocomplete="off" value = "Enter your username" /><button>Send</button>
 			</form>
 		</div>
 	</div>
@@ -51,26 +51,29 @@
 	var socket = io();
 
 	var username = null;
+	
 	$('form').submit(function(){
-	  if (username == null)
-	  {
-	     username = $('#m').val();
-	     socket.emit('chat message',username + " has entered the chat!");
-	   }
-	  else
-	    socket.emit('chat message',username + ": " + $('#m').val());
-	  
-	  $('#m').val('');
-	  return false;
+		if (username == null)
+		{
+			username = $('#m').val();
+			socket.emit('chat message',username + " has entered the chat!");
+		}
+		else
+			socket.emit('chat message',username + ": " + $('#m').val());
+
+		$('#m').val('');
+		return false;
 	});
 	$('#m').focus(function(){
-	  $('#m').val('');
+		$('#m').val('');
 	});
-	
 	socket.on('chat message', function(msg){
-	  $('#messages').append($('<li>').text(msg));
-	  var messages = document.getElementById("messages");
-	  messages.scrollTop = myDiv.scrollHeight;
+		$('#messages').append($('<li>').text(msg));
+		var messages = document.getElementById("messages");
+		messages.scrollTop = myDiv.scrollHeight;
+	});
+	socket.on('sendpoint', function(point){
+		drawPoint(point.x,point.y);
 	});
 
 	function getMousePos(canvas, evt) {
@@ -111,10 +114,6 @@
 		{
 			drawPointLocal(evt);
 		}
-	});
-
-	socket.on('sendpoint', function(point){
-		drawPoint(point.x,point.y);
 	});
 	</script>
 </body>
