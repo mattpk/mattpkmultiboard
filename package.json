@@ -4,7 +4,8 @@
   "description": "trying to make a whiteboard",
   "dependencies": {
     "express": "4.x",
-    "socket.io": "1.x"
+    "socket.io": "1.x",
+    "jquery": "2.x"
   },
   "engines": {
     "node": "0.10.x"
