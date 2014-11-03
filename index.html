@@ -51,7 +51,7 @@
 
 	
 	var username = null;
-    /*
+    
 	$('form').submit(function(){
 		if (username == null)
 		{
@@ -65,18 +65,18 @@
 		$('#m').val('');
 		return false;
 	});
-	*/
+	
 	$('#m').focus(function(){
 		$('#m').val('');
 		alert('wat');
 	});
-	/*
+	
 	socket.on('chat message', function(msg){
 		$('#messages').append($('<li>').text(msg));
 		var messages = document.getElementById("messages");
 		messages.scrollTop = myDiv.scrollHeight;
 	});
-	*/
+	
 	socket.on('sendpoint', function(point){
 		drawPoint(point.x,point.y);
 	});
