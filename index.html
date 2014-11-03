@@ -49,6 +49,8 @@
 	var hold = false;
 	var socket = io();
 
+	var lastX = null;
+	var lastY = null;
 	
 	var username = null;
     
@@ -80,6 +82,14 @@
 		drawPoint(point.x,point.y);
 	});
 
+	socket.on('sendline',function(points){
+		drawLine(points.x1,points.y1,points.x2,points.y2);
+	});
+
+	socket.on('clear canvas',function(){
+		canvas.width = canvas.width;
+	});
+
 	function getMousePos(canvas, evt) {
 		var rect = canvas.getBoundingClientRect();
 		return {
@@ -91,6 +101,8 @@
 	function drawPointLocal(evt)
 	{
 		var mousePos = getMousePos(canvas,evt);
+		lastX = mousePos.x;
+		lastY = mousePos.y;
 		drawPoint(mousePos.x,mousePos.y,function(){
 			socket.emit('sendpoint',{x:mousePos.x,y:mousePos.y});
 		});
@@ -98,25 +110,57 @@
 
 	function drawPoint(x,y,callback) {
 		ctx.beginPath();
-		ctx.arc(x, y, 3, 0, 2 * Math.PI, false);
+		ctx.arc(x, y, 0.4, 0, 2 * Math.PI, false);
 		ctx.fillStyle = 'black';
 		ctx.fill();
 		ctx.stroke();
 		callback();
 	}
 
+	
+	function drawLineLocal(evt)
+	{
+		var mousePos = getMousePos(canvas,evt);
+		drawLine(lastX,lastY,mousePos.x,mousePos.y,function(){
+			socket.emit('sendline',{x1:lastX,y1:lastY,x2:mousePos.x,y2:mousePos.y});
+			lastX = mousePos.x;
+			lastY = mousePos.y;
+		});
+	}
+
+	function drawLine(x1,y1,x2,y2,callback) {
+		ctx.beginPath();
+		ctx.moveTo(x1,y1);
+		ctx.lineTo(x2,y2);
+		ctx.lineWidth = 6;
+		ctx.lineCap = 'round';
+		ctx.stroke();
+		callback();
+	}
+
+	function releaseCursor() {
+		hold = false;
+		lastX = null;
+		lastY = null;
+	}
+
 	canvas.addEventListener('mousedown',function(evt){
 		hold = true;
 		drawPointLocal(evt);
 	});
-
 	canvas.addEventListener('mouseup',function(evt){
-		hold = false;
+		releaseCursor();
+	});
+	canvas.addEventListener('mouseout',function(evt){
+		releaseCursor();
 	});
 	canvas.addEventListener('mousemove', function(evt) {
 		if (hold)
 		{
-			drawPointLocal(evt);
+			if (lastX == null || lastY == null)
+				drawPointLocal(evt);
+			else
+				drawLineLocal(evt);
 		}
 	});
 	</script>
