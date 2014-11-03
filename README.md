@@ -1,1 +1,1 @@
-A Basic Multiplayer Whiteboard
+Basic chat + whiteboard using websockets.
