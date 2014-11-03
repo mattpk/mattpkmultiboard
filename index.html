@@ -47,11 +47,12 @@
 	var canvas = document.getElementById('myCanvas');
 	var ctx = canvas.getContext("2d");
 	var hold = false;
-
+	alert("wat");
 	var socket = io();
 
+
 	var username = null;
-	
+
 	$('form').submit(function(){
 		if (username == null)
 		{
