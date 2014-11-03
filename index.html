@@ -3,18 +3,44 @@
 <head>
 	<title>Multiboard</title>
 	<style>
-	#myCanvas {
-		padding-left: 0;
-		padding-right: 0;
+	.center {
+		width:1004px;
+		height:500px;
 		margin-left: auto;
 		margin-right: auto;
 		display: block;
+	}
+	#chatbox {
+		width: 350px;
+		height:500px;
+		margin: 0px auto;
 		border: 1px solid;
+		float:left;
+		position:relative;
+	}
+	#messages {height:464px;list-style-type: none; margin: 0; padding: 0;overflow:hidden; overflow-y:scroll;}
+	#messages li { padding: 5px 10px; }
+	#messages li:nth-child(odd) { background: #eee; }
+	form {position: absolute; bottom: 0;width: 100%;}
+	form input {width:80%;border: 1px solid; height:30px;margin: 0px auto;padding:2px;}
+	form button {width:18%;background: gray; border: 1px solid;margin: 0px auto; height:36px;}
+	#myCanvas {
+		border: 1px solid;
+		float:left;
 	}
 	</style>
 </head>	
 <body>
-	<canvas id="myCanvas" width="600" height="450">Your browser is outdated.</canvas>
+	<h1 style= "text-align:center">Multiboard</h1>
+	<div class ="center">
+		<canvas id="myCanvas" width = "650px" height = "500px">Your browser is outdated.</canvas>
+		<div id="chatbox">
+			<ul id="messages"></ul>
+			<form action="">
+			  <input id="m" autocomplete="off" value = "Enter your username" /><button>Send</button>
+			</form>
+		</div>
+	</div>
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 	<script>
@@ -23,6 +49,29 @@
 	var hold = false;
 
 	var socket = io();
+
+	var username = null;
+	$('form').submit(function(){
+	  if (username == null)
+	  {
+	     username = $('#m').val();
+	     socket.emit('chat message',username + " has entered the chat!");
+	   }
+	  else
+	    socket.emit('chat message',username + ": " + $('#m').val());
+	  
+	  $('#m').val('');
+	  return false;
+	});
+	$('#m').focus(function(){
+	  $('#m').val('');
+	});
+	
+	socket.on('chat message', function(msg){
+	  $('#messages').append($('<li>').text(msg));
+	  var messages = document.getElementById("messages");
+	  messages.scrollTop = myDiv.scrollHeight;
+	});
 
 	function getMousePos(canvas, evt) {
 		var rect = canvas.getBoundingClientRect();
@@ -53,7 +102,7 @@
 		hold = true;
 		drawPointLocal(evt);
 	});
-	
+
 	canvas.addEventListener('mouseup',function(evt){
 		hold = false;
 	});
