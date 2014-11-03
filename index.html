@@ -47,9 +47,7 @@
 	var canvas = document.getElementById('myCanvas');
 	var ctx = canvas.getContext("2d");
 	var hold = false;
-	alert("wat");
 	var socket = io();
-
 
 	var username = null;
 
@@ -65,8 +63,10 @@
 		$('#m').val('');
 		return false;
 	});
+
 	$('#m').focus(function(){
 		$('#m').val('');
+		alert('wat');
 	});
 	socket.on('chat message', function(msg){
 		$('#messages').append($('<li>').text(msg));
