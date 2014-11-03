@@ -49,7 +49,7 @@
 	var hold = false;
 	var socket = io();
 
-	/*
+	
 	var username = null;
 
 	$('form').submit(function(){
@@ -59,12 +59,14 @@
 			socket.emit('chat message',username + " has entered the chat!");
 		}
 		else
+		{
+			alert("sent");
 			socket.emit('chat message',username + ": " + $('#m').val());
-
+		}
 		$('#m').val('');
 		return false;
 	});
-
+	/*
 	$('#m').focus(function(){
 		$('#m').val('');
 		alert('wat');
